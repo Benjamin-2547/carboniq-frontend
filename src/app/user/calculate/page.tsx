@@ -262,7 +262,7 @@ export default function CalculatePage() {
 
         if (firstScopeId != null) {
           const activeActs = (activityRes.data ?? []).filter(
-            (a) => isActiveFlag(a) && a.scope_id === firstScopeId,
+            (a:any) => isActiveFlag(a) && a.scope_id === firstScopeId,
           )
           const firstActId = activeActs[0]?.activity_id ?? null
           setSelectedActivityId(firstActId)

@@ -118,16 +118,29 @@ export default function GeneralAdviceAdminPage() {
         return
       }
 
-      const grouped: CategoryWithDetails[] =
-        (catRows ?? []).map((c) => ({
-          ...c,
-          details: (detailRows ?? []).filter(
-            (d) => d.category_id === c.id
-          ),
-        }))
+      const catRowsTyped: AdviceCategory[] = catRows ?? []
+      const detailRowsTyped: AdviceDetail[] = detailRows ?? []
 
-      setCategories(grouped)
-      setLoading(false)
+      const grouped: CategoryWithDetails[] = catRowsTyped.map((c) => ({
+        ...c,
+        details: detailRowsTyped.filter(
+          (d) => d.category_id === c.id
+        ),
+      }))
+
+      // setCategories(grouped)
+      // setLoading(false)
+
+      //       const grouped: CategoryWithDetails[] =
+      //   (catRows ?? []).map((c) => ({
+      //     ...c,
+      //     details: (detailRows ?? []).filter(
+      //       (d) => d.category_id === c.id
+      //     ),
+      //   }))
+
+      // setCategories(grouped)
+      // setLoading(false)
     }
 
     load()
