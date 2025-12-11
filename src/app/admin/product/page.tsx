@@ -165,14 +165,14 @@ export default function AdminProductPage() {
       prev.map((row) =>
         row.product_id === id
           ? {
-              ...row,
-              [field]:
-                field === "price_thb"
-                  ? value === ""
-                    ? null
-                    : Number(value)
-                  : value,
-            }
+            ...row,
+            [field]:
+              field === "price_thb"
+                ? value === ""
+                  ? null
+                  : Number(value)
+                : value,
+          }
           : row,
       ),
     )
@@ -429,11 +429,10 @@ export default function AdminProductPage() {
               <button
                 key={cat.category_id}
                 onClick={() => setActiveCategoryId(cat.category_id)}
-                className={`rounded-full px-4 py-1.5 text-sm border transition-colors ${
-                  activeCategoryId === cat.category_id
+                className={`rounded-full px-4 py-1.5 text-sm border transition-colors ${activeCategoryId === cat.category_id
                     ? "bg-white text-black border-white"
                     : "bg-black/30 border-white/40 text-text-secondary hover:bg-white/10"
-                }`}
+                  }`}
               >
                 {cat.display_name_th || cat.category_name || `หมวด ${cat.category_id}`}
               </button>
@@ -448,7 +447,7 @@ export default function AdminProductPage() {
               {activeCategory.display_name_th || activeCategory.category_name}
             </span>{" "}
             <span className="font-medium text-emerald-300">
-            ({activeCategory.code})
+              ({activeCategory.code})
             </span>
           </p>
         )}
@@ -472,7 +471,7 @@ export default function AdminProductPage() {
             //className="h-9 rounded-lg px-4 bg-amber-400/10 backdrop-blur-sm border border-amber-400/80 text-amber-400 text-sm shadow-lg shadow-black/20 hover:bg-amber-400/20 hover:shadow-black/30 transition-all"
             disabled={!activeCategoryId}
           >
-            + เพิ่มสินค้า 
+            + เพิ่มสินค้า
           </Button>
         </div>
 

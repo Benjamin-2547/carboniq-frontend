@@ -214,7 +214,7 @@ export default async function AdminHomePage() {
                 ผู้ใช้จะไม่เห็นในหน้าใช้งาน แต่ข้อมูลเดิมยังอยู่ในฐานข้อมูล
               </li>
               <li>
-                ตัวเลือก (option_item) ที่เชื่อมกับ source_factor หรือ emission_factor เป็นส่วนสำคัญของสูตรคำนวณคาร์บอน การแก้ไข 
+                ตัวเลือก (option_item) ที่เชื่อมกับ source_factor หรือ emission_factor เป็นส่วนสำคัญของสูตรคำนวณคาร์บอน การแก้ไข
                 Factor Type อาจทำให้ผลคำนวณของกิจกรรมที่ใช้ตัวเลือกนี้คลาดเคลื่อนหรือไม่ทำงาน ดังนั้นควรตรวจสอบให้แน่ใจก่อนแก้ไขทุกครั้ง
               </li>
               <li>
@@ -253,6 +253,6 @@ export default async function AdminHomePage() {
           </Link>
         </div>
       </section>*/}
-    </main> 
+    </main>
   )
 }

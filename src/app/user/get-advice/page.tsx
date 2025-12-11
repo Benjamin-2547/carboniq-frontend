@@ -239,7 +239,7 @@ export default function GetAdvicePage() {
             </div> */}
             <Button
               size="sm"
-              className="px-3 py-4 text-sm font-semibold bg-emerald-500 hover:bg-emerald-500/90 text-black rounded-lg shadow-xl"
+              className="px-3 py-4 text-sm font-semibold bg-emerald-500/80 hover:bg-emerald-500 text-black rounded-lg shadow-xl"
               onClick={handleSubmit}
               disabled={saving || loadingData}
             >

@@ -611,75 +611,75 @@ export default function AdviceSummaryPage() {
 
                 {/* ตารางรายละเอียด */}
                 {group.results.length > 0 && (
-  <div className="space-y-3">
-    <p className="text-xs md:text-base font-medium text-foreground">
-      รายละเอียดสินค้าอันดับ 1–3 ในหมวดนี้
-    </p>
+                  <div className="space-y-3">
+                    <p className="text-xs md:text-base font-medium text-foreground">
+                      รายละเอียดสินค้าอันดับ 1–3 ในหมวดนี้
+                    </p>
 
-    <ScrollArea className="w-full rounded-md border border-white/20 bg-black/40">
-      {/* ให้เนื้อหาข้างในกว้างเท่าตาราง แล้วเลื่อนใน ScrollArea แทน */}
-      <div className="min-w-max">
-        <table className="w-full border-collapse text-xs md:text-sm">
-          <thead>
-            <tr className="bg-white/5 text-left text-[11px] md:text-xs uppercase tracking-wide text-muted-foreground divide-x divide-white/20">
-              <th className="px-4 py-2 border-b border-white/20">อันดับ</th>
-              <th className="px-4 py-2 border-b border-white/20">ชื่อสินค้า</th>
-              <th className="px-4 py-2 border-b border-white/20">ยี่ห้อ</th>
-              <th className="px-4 py-2 border-b border-white/20">ราคา (บาท)</th>
-              {detailKeys.map((key) => (
-                <th key={key} className="px-4 py-2 border-b border-white/20">
-                  {key}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {group.results.map((r, idx) => {
-              const detail = r.detail
-              return (
-                <tr
-                  key={r.resultId}
-                  className={idx % 2 === 0 ? "bg-black/30 divide-x divide-white/20" : "bg-black/10 divide-x divide-white/20"}
-                >
-                  <td className="px-4 py-2 border-b border-white/10">
-                    {r.rank}
-                  </td>
-                  <td className="px-4 py-2 border-b border-white/10">
-                    {r.productName}
-                  </td>
-                  <td className="px-4 py-2 border-b border-white/10">
-                    {r.brand || "-"}
-                  </td>
-                  <td className="px-4 py-2 border-b border-white/10">
-                    {formatNumber(r.priceThb)}
-                  </td>
-                  {detailKeys.map((key) => (
-                    <td
-                      key={key}
-                      className="px-4 py-2 border-b border-white/10"
-                    >
-                      {detail ? formatNumber(detail[key]) : "-"}
-                    </td>
-                  ))}
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
+                    <ScrollArea className="w-full rounded-md border border-white/20 bg-black/40">
+                      {/* ให้เนื้อหาข้างในกว้างเท่าตาราง แล้วเลื่อนใน ScrollArea แทน */}
+                      <div className="min-w-max">
+                        <table className="w-full border-collapse text-xs md:text-sm">
+                          <thead>
+                            <tr className="bg-white/5 text-left text-[11px] md:text-xs uppercase tracking-wide text-muted-foreground divide-x divide-white/20">
+                              <th className="px-4 py-2 border-b border-white/20">อันดับ</th>
+                              <th className="px-4 py-2 border-b border-white/20">ชื่อสินค้า</th>
+                              <th className="px-4 py-2 border-b border-white/20">ยี่ห้อ</th>
+                              <th className="px-4 py-2 border-b border-white/20">ราคา (บาท)</th>
+                              {detailKeys.map((key) => (
+                                <th key={key} className="px-4 py-2 border-b border-white/20">
+                                  {key}
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {group.results.map((r, idx) => {
+                              const detail = r.detail
+                              return (
+                                <tr
+                                  key={r.resultId}
+                                  className={idx % 2 === 0 ? "bg-black/30 divide-x divide-white/20" : "bg-black/10 divide-x divide-white/20"}
+                                >
+                                  <td className="px-4 py-2 border-b border-white/10">
+                                    {r.rank}
+                                  </td>
+                                  <td className="px-4 py-2 border-b border-white/10">
+                                    {r.productName}
+                                  </td>
+                                  <td className="px-4 py-2 border-b border-white/10">
+                                    {r.brand || "-"}
+                                  </td>
+                                  <td className="px-4 py-2 border-b border-white/10">
+                                    {formatNumber(r.priceThb)}
+                                  </td>
+                                  {detailKeys.map((key) => (
+                                    <td
+                                      key={key}
+                                      className="px-4 py-2 border-b border-white/10"
+                                    >
+                                      {detail ? formatNumber(detail[key]) : "-"}
+                                    </td>
+                                  ))}
+                                </tr>
+                              )
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
 
-      {/* แถบเลื่อนแนวนอน */}
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
-  </div>
-)}
+                      {/* แถบเลื่อนแนวนอน */}
+                      <ScrollBar orientation="horizontal" />
+                    </ScrollArea>
+                  </div>
+                )}
 
 
                 {/* ปุ่มบันทึกสินค้า */}
                 <div className="flex justify-end pt-2">
                   <Button
                     size="sm"
-                    className="inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-xs md:text-sm font-semibold text-black shadow-lg hover:bg-emerald-500/90 disabled:bg-emerald-700/60 disabled:text-emerald-100/60"
+                    className="inline-flex items-center gap-2 rounded-lg bg-emerald-500/80 px-4 py-2 text-xs md:text-sm font-semibold text-black shadow-lg hover:bg-emerald-500 disabled:bg-emerald-700/60 disabled:text-emerald-100/60"
                     onClick={() => handleSaveGroup(group)}
                     disabled={
                       savingMap[group.requestItemId] ||

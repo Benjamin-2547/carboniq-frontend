@@ -164,6 +164,7 @@ export default function SummaryPage() {
   const [detailsByScope, setDetailsByScope] = useState<Record<number, DetailItem[]>>({})
   const [showAllByScope, setShowAllByScope] = useState<Record<number, boolean>>({})
   const [printedAt, setPrintedAt] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     setPrintedAt(new Date().toLocaleString())
@@ -172,46 +173,48 @@ export default function SummaryPage() {
   async function loadSummaryAndDetails() {
     try {
       setLoading(true)
+      setError(null)
 
-      const [
-        scopeRes,
-        logRes,
-        activityRes,
-        fieldRes,
-        optionRes,
-        unitRes,
-        ciRes,
-      ] = await Promise.all([
-        supabase
-          .from("scope")
-          .select("scope_id, scope_name")
-          .order("scope_id", { ascending: true }),
-        supabase
-          .from("carbon_calculation_log")
-          .select("input_id, scope_id, co2e_kg"),
-        supabase
-          .from("activity")
-          .select("activity_id, activity_name, scope_id"),
-        supabase
-          .from("activity_field")
-          .select("field_id, activity_id, field_label, field_order"),
-        supabase
-          .from("option_item")
-          .select("option_id, display_name"),
-        supabase
-          .from("unit")
-          .select("unit_id, name, symbol, code"),
-        supabase
-          .from("carbon_input")
-          .select(
-            "input_id, activity_id, field_id, submitted_at, value_num, unit_id, option_id, field_type_cached",
-          )
-          .order("submitted_at", { ascending: false })
-          .limit(500),
-      ])
+      const {
+        data: { user },
+        error: userErr,
+      } = await supabase.auth.getUser()
+      if (userErr) throw userErr
+      if (!user) {
+        toast.error("ไม่พบข้อมูลผู้ใช้")
+        setError("ไม่พบข้อมูลผู้ใช้")
+        return
+      }
+
+      const [scopeRes, activityRes, fieldRes, optionRes, unitRes, ciRes] =
+        await Promise.all([
+          supabase
+            .from("scope")
+            .select("scope_id, scope_name")
+            .order("scope_id", { ascending: true }),
+          supabase
+            .from("activity")
+            .select("activity_id, activity_name, scope_id"),
+          supabase
+            .from("activity_field")
+            .select("field_id, activity_id, field_label, field_order"),
+          supabase
+            .from("option_item")
+            .select("option_id, display_name"),
+          supabase
+            .from("unit")
+            .select("unit_id, name, symbol, code"),
+          supabase
+            .from("carbon_input")
+            .select(
+              "input_id, activity_id, field_id, submitted_at, value_num, unit_id, option_id, field_type_cached",
+            )
+            .eq("user_id", user.id)
+            .order("submitted_at", { ascending: false })
+            .limit(500),
+        ])
 
       if (scopeRes.error) throw scopeRes.error
-      if (logRes.error) throw logRes.error
       if (activityRes.error) throw activityRes.error
       if (fieldRes.error) throw fieldRes.error
       if (optionRes.error) throw optionRes.error
@@ -223,12 +226,25 @@ export default function SummaryPage() {
         ...s,
         scope_name: `Scope ${s.scope_id}`,
       }))
-      const logs = (logRes.data ?? []) as CarbonLogRow[]
       const activities = (activityRes.data ?? []) as ActivityRow[]
       const fields = (fieldRes.data ?? []) as ActivityFieldRow[]
       const options = (optionRes.data ?? []) as OptionItemRow[]
       const units = (unitRes.data ?? []) as UnitRow[]
       const inputs = (ciRes.data ?? []) as CarbonInputRow[]
+
+      // โหลด log ตาม input_id ของ user
+      let logs: CarbonLogRow[] = []
+      const inputIds = inputs.map((r) => r.input_id)
+      if (inputIds.length > 0) {
+        const logRes = await supabase
+          .from("carbon_calculation_log")
+          .select("input_id, scope_id, co2e_kg")
+          .eq("is_active", true)
+          .in("input_id", inputIds)
+
+        if (logRes.error) throw logRes.error
+        logs = (logRes.data ?? []) as CarbonLogRow[]
+      }
 
       // ✅ map input_id -> co2e sum
       const co2eByInputId = new Map<number, number>()
@@ -239,6 +255,16 @@ export default function SummaryPage() {
           (co2eByInputId.get(r.input_id) ?? 0) + Number(r.co2e_kg),
         )
       }
+
+      // ใช้เฉพาะ submission ที่มี log is_active จริง
+      const keyOf = (r: CarbonInputRow) => `${r.activity_id}|${r.submitted_at}`
+      const rowById = new Map(inputs.map((r) => [r.input_id, r]))
+      const allowedKeys = new Set<string>()
+      for (const l of logs) {
+        const row = rowById.get(l.input_id)
+        if (row) allowedKeys.add(keyOf(row))
+      }
+      const filteredInputs = inputs.filter((r) => allowedKeys.has(keyOf(r)))
 
       // --------- SUMMARY (รวม co2e ตาม scope) ----------
       const totalByScope: Record<number, number> = {}
@@ -272,7 +298,7 @@ export default function SummaryPage() {
         { base: DetailItem; pairsRaw: DetailPair[] }
       >()
 
-      for (const row of inputs) {
+      for (const row of filteredInputs) {
         const act = actMap.get(row.activity_id)
         const scopeId = act?.scope_id ?? -1
         if (scopeId === -1) continue

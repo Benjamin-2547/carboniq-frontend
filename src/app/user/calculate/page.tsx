@@ -262,7 +262,7 @@ export default function CalculatePage() {
 
         if (firstScopeId != null) {
           const activeActs = (activityRes.data ?? []).filter(
-            (a:any) => isActiveFlag(a) && a.scope_id === firstScopeId,
+            (a: any) => isActiveFlag(a) && a.scope_id === firstScopeId,
           )
           const firstActId = activeActs[0]?.activity_id ?? null
           setSelectedActivityId(firstActId)
@@ -327,22 +327,48 @@ export default function CalculatePage() {
     try {
       setLoadingHistory(true)
 
-      const [ciRes, logRes] = await Promise.all([
-        supabase
-          .from("carbon_input")
-          .select(
-            "input_id, activity_id, field_id, submitted_at, value_num, unit_id, option_id, field_type_cached",
-          )
-          .order("submitted_at", { ascending: false })
-          .limit(200),
-        supabase.from("carbon_calculation_log").select("input_id, co2e_kg, scope_id"),
-      ])
+      const {
+        data: { user },
+        error: userErr,
+      } = await supabase.auth.getUser()
+      if (userErr) throw userErr
+      if (!user) throw new Error("ไม่พบข้อมูลผู้ใช้")
+
+      const ciRes = await supabase
+        .from("carbon_input")
+        .select(
+          "input_id, activity_id, field_id, submitted_at, value_num, unit_id, option_id, field_type_cached",
+        )
+        .eq("user_id", user.id)
+        .order("submitted_at", { ascending: false })
+        .limit(200)
 
       if (ciRes.error) throw ciRes.error
-      if (logRes.error) throw logRes.error
 
       const ciRows = (ciRes.data ?? []) as CarbonInputRow[]
-      const logRows = (logRes.data ?? []) as CarbonLogRow[]
+      const inputIds = ciRows.map((r) => r.input_id)
+
+      let logRows: CarbonLogRow[] = []
+      if (inputIds.length > 0) {
+        const logRes = await supabase
+          .from("carbon_calculation_log")
+          .select("input_id, co2e_kg, scope_id")
+          .eq("is_active", true)
+          .in("input_id", inputIds)
+
+        if (logRes.error) throw logRes.error
+        logRows = (logRes.data ?? []) as CarbonLogRow[]
+      }
+
+      // เก็บ submission ทั้งชุดที่มี log is_active
+      const keyOf = (r: CarbonInputRow) => `${r.activity_id}|${r.submitted_at}`
+      const rowById = new Map(ciRows.map((r) => [r.input_id, r]))
+      const allowedKeys = new Set<string>()
+      for (const l of logRows) {
+        const row = rowById.get(l.input_id)
+        if (row) allowedKeys.add(keyOf(row))
+      }
+      const filteredInputs = ciRows.filter((r) => allowedKeys.has(keyOf(r)))
 
       const actMap = new Map<number, ActivityRow>(activityRows.map((a: any) => [a.activity_id, a]))
       const fldMap = new Map<number, ActivityFieldRow>(fieldRows.map((f: any) => [f.field_id, f]))
@@ -356,7 +382,7 @@ export default function CalculatePage() {
 
       const groups = new Map<string, HistoryItem>()
 
-      for (const row of ciRows) {
+      for (const row of filteredInputs) {
         const groupKey = `${row.activity_id}|${row.submitted_at}`
 
         let group = groups.get(groupKey)
@@ -560,15 +586,27 @@ export default function CalculatePage() {
       if (userError) throw userError
       if (!user) throw new Error("ไม่พบข้อมูลผู้ใช้")
 
-      // ลบเฉพาะข้อมูลของ user นี้
-      const { error } = await supabase
+      // หา input_id ทั้งหมดของ user
+      const { data: userInputs, error: inputErr } = await supabase
         .from("carbon_input")
-        .delete()
-        .eq("user_id", user.id)   // 👈 เปลี่ยน 'user_id' ให้ตรงกับชื่อคอลัมน์ในตารางคุณ
+        .select("input_id")
+        .eq("user_id", user.id)
 
-      if (error) throw error
+      if (inputErr) throw inputErr
 
-      toast.success("ล้างข้อมูลสำเร็จแล้ว")
+      const inputIds = (userInputs ?? []).map((r: any) => r.input_id)
+
+      // soft delete log (is_active = false)
+      if (inputIds.length > 0) {
+        const { error: logErr } = await supabase
+          .from("carbon_calculation_log")
+          .update({ is_active: false })
+          .in("input_id", inputIds)
+        if (logErr) throw logErr
+      }
+
+      // ไม่ลบ carbon_input เพื่อไม่ให้ cascade ลบ log; ใช้ is_active=false แทน
+      toast.success("ล้างข้อมูลสำเร็จแล้ว (ปิดการใช้งาน log ทั้งหมด)")
       setHistory([])
       setEditingItem(null)
       setFieldValues({})
@@ -589,16 +627,36 @@ export default function CalculatePage() {
     )
     if (!ok) return
 
-    try {
-      const { error } = await supabase
+  try {
+      const {
+        data: { user },
+        error: userErr,
+      } = await supabase.auth.getUser()
+      if (userErr) throw userErr
+      if (!user) throw new Error("ไม่พบข้อมูลผู้ใช้")
+
+      // หา input_id ของรายการนี้
+      const { data: inputs, error: findErr } = await supabase
         .from("carbon_input")
-        .delete()
+        .select("input_id")
         .eq("activity_id", item.activityId)
         .eq("submitted_at", item.submittedAt)
+        .eq("user_id", user.id)
 
-      if (error) throw error
+      if (findErr) throw findErr
+      const inputIds = (inputs ?? []).map((r: any) => r.input_id)
 
-      toast.success("ลบรายการแล้ว")
+      // soft delete log
+      if (inputIds.length > 0) {
+        const { error: logErr } = await supabase
+          .from("carbon_calculation_log")
+          .update({ is_active: false })
+          .in("input_id", inputIds)
+        if (logErr) throw logErr
+      }
+
+      // ซ่อนรายการ: รีโหลด history จะหายเพราะไม่มี log is_active
+      toast.success("ปิดการใช้งานรายการแล้ว")
       if (
         editingItem &&
         editingItem.activityId === item.activityId &&
@@ -727,7 +785,7 @@ export default function CalculatePage() {
             แบบฟอร์มกรอกข้อมูล
           </CardTitle>
           <CardDescription className="text-sm md:text-base text-muted-foreground">
-            📌 เลือก Scope → เลือกกิจกรรม → กรอกข้อมูลให้ครบ แล้วกด{" "}
+            เลือก Scope → เลือกกิจกรรม → กรอกข้อมูลให้ครบ แล้วกด{" "}
             <span className="font-semibold text-emerald-300">เสร็จสิ้น</span>
           </CardDescription>
         </CardHeader>
@@ -1085,7 +1143,3 @@ export default function CalculatePage() {
     </main>
   )
 }
-
-
-
-

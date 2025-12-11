@@ -375,7 +375,7 @@ export default function GeneralAdviceAdminPage() {
 
               <div className="space-y-2">
                 <label className="text-xs text-text-secondary">
-                  ลำดับ 
+                  ลำดับ
                 </label>
                 <input
                   type="number"

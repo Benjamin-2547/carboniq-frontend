@@ -332,11 +332,11 @@ export default function AdminCalculatePage() {
       }
 
       const map: FieldUnitsMap = {}
-      ;(mapRows ?? []).forEach((row: ActivityFieldUnitRow) => {
-        const k = keyOf(row.field_id)
-        if (!map[k]) map[k] = []
-        map[k].push(row.unit_id)
-      })
+        ; (mapRows ?? []).forEach((row: ActivityFieldUnitRow) => {
+          const k = keyOf(row.field_id)
+          if (!map[k]) map[k] = []
+          map[k].push(row.unit_id)
+        })
       setFieldUnits(map)
     }
 
@@ -1549,7 +1549,7 @@ export default function AdminCalculatePage() {
             <p className="text-xs md:text-sm text-text-secondary mt-1 max-w-3xl">
               📌 ใช้สำหรับ field_type = &quot;dropdown&quot; ซึ่งทุก group จะมี key เช่น{" "}
               <code className="text-[15px] text-emerald-300">vehicle_type</code>, <code className="text-[15px] text-emerald-300">fuel_type</code>{" "}
-            </p>  
+            </p>
             <p className="text-xs md:text-sm text-text-secondary mt-1 max-w-3xl">
               และมี option ที่เป็นตัวเลือกต่างๆใน Dropdown Group นั้นๆ
             </p>
@@ -1602,11 +1602,10 @@ export default function AdminCalculatePage() {
                       setSelectedGroupKey(g.dropdown_group_key)
                       setRenameDraftKey(g.dropdown_group_key)
                     }}
-                    className={`text-left rounded-lg px-3 py-2 border text-xs transition-colors ${
-                      selectedGroupKey === g.dropdown_group_key
+                    className={`text-left rounded-lg px-3 py-2 border text-xs transition-colors ${selectedGroupKey === g.dropdown_group_key
                         ? "bg-white text-black border-white"
                         : "bg-black/30 border-white/40 text-text-secondary hover:bg-white/10"
-                    }`}
+                      }`}
                   >
                     <div className="font-semibold flex items-center justify-between gap-2">
                       <span>{g.dropdown_group_key}</span>
@@ -1711,8 +1710,8 @@ export default function AdminCalculatePage() {
                         opt.factor_type === "source_factor_id"
                           ? "ใช้ค่าจาก source_factor"
                           : opt.factor_type === "emission_factor_id"
-                          ? "ใช้ค่าจาก emission_factor"
-                          : "ไม่ใช้คำนวณโดยตรง (context_only)"
+                            ? "ใช้ค่าจาก emission_factor"
+                            : "ไม่ใช้คำนวณโดยตรง (context_only)"
 
                       return (
                         <tr key={opt.option_id} className="border-t border-white/10 hover:bg-white/10 align-top">
@@ -1743,8 +1742,8 @@ export default function AdminCalculatePage() {
                                   ...(v === "context_only"
                                     ? { source_factor_id: null, emission_factor_id: null, is_context_only: true }
                                     : v === "source_factor_id"
-                                    ? { emission_factor_id: null, is_context_only: false }
-                                    : { source_factor_id: null, is_context_only: false }),
+                                      ? { emission_factor_id: null, is_context_only: false }
+                                      : { source_factor_id: null, is_context_only: false }),
                                 })
                               }}
                             >
