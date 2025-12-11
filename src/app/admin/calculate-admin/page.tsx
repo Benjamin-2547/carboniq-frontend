@@ -90,6 +90,10 @@ type FieldUnitsMap = Record<string, number[]> // key = String(field_id หรื
 
 const supabase = createClient()
 
+function sortDropdownGroups(list: DropdownGroupRow[]) {
+  return [...list].sort((a, b) => a.dropdown_group_key.localeCompare(b.dropdown_group_key))
+}
+
 function keyOf(id: number | string | null | undefined) {
   return id == null ? "" : String(id)
 }
@@ -184,11 +188,13 @@ export default function AdminCalculatePage() {
         .order("dropdown_group_key", { ascending: true })
       if (groupErr) toast.error(groupErr.message || "โหลด Dropdown Group ไม่สำเร็จ")
 
-      const groups: DropdownGroupRow[] = (groupRows ?? []).map((g: any) => ({
-        ...g,
-        _isNew: false,
-        _isSaving: false,
-      }))
+      const groups: DropdownGroupRow[] = sortDropdownGroups(
+        (groupRows ?? []).map((g: any) => ({
+          ...g,
+          _isNew: false,
+          _isSaving: false,
+        })),
+      )
       setDropdownGroups(groups)
       if (groups.length > 0) {
         setSelectedGroupKey((prev) => prev ?? groups[0].dropdown_group_key)
@@ -378,7 +384,13 @@ export default function AdminCalculatePage() {
         }
       })
 
-      setOptions(rows)
+      setOptions(
+        rows.sort((a, b) => {
+          const nameA = (a.display_name || a.value_code || "").toLowerCase()
+          const nameB = (b.display_name || b.value_code || "").toLowerCase()
+          return nameA.localeCompare(nameB)
+        }),
+      )
     }
 
     loadOptions()
@@ -767,10 +779,12 @@ export default function AdminCalculatePage() {
       return
     }
 
-    setDropdownGroups((prev) => [
-      ...prev,
-      { dropdown_group_key: trimmed, description: "", _isNew: true, _isSaving: false },
-    ])
+    setDropdownGroups((prev) =>
+      sortDropdownGroups([
+        ...prev,
+        { dropdown_group_key: trimmed, description: "", _isNew: true, _isSaving: false },
+      ]),
+    )
     setSelectedGroupKey(trimmed)
     setRenameDraftKey(trimmed)
     toast.success("เพิ่ม Dropdown Group ใน UI แล้ว (อย่าลืมกดบันทึก)")
@@ -905,9 +919,7 @@ export default function AdminCalculatePage() {
 
     // 5) update UI
     setDropdownGroups((prev) =>
-      prev
-        .map((g) => (g.dropdown_group_key === oldKey ? { ...g, dropdown_group_key: newKey } : g))
-        .sort((a, b) => a.dropdown_group_key.localeCompare(b.dropdown_group_key)),
+      sortDropdownGroups(prev.map((g) => (g.dropdown_group_key === oldKey ? { ...g, dropdown_group_key: newKey } : g))),
     )
 
     setActivityFields((prev) =>

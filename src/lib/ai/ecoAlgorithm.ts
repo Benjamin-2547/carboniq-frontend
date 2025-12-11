@@ -300,10 +300,9 @@ async function loadSpecsAndMerge(products: Product[]): Promise<Product[]> {
   // Merge specs into products
   return products.map((p) => {
     const spec = specsMap[p.product_id];
-    const co2_reduction = spec?.co2_reduction ?? null;
-    const price = p.price_thb || 0;
-    const co2_per_baht =
-      co2_reduction && price > 0 ? co2_reduction / price : null;
+    const co2_reduction = spec?.co2_reduction ?? 0; // default 0 ถ้าไม่มี metric
+    const price = Number(p.price_thb) || 0;
+    const co2_per_baht = price > 0 ? co2_reduction / price : 0;
 
     return {
       ...p,
@@ -320,10 +319,9 @@ export async function loadProductsWithMetrics(): Promise<Product[]> {
   console.log(`✅ โหลดสินค้าได้ ${products.length} รายการ`);
 
   const merged = await loadSpecsAndMerge(products);
-  const valid = merged.filter((p) => p.co2_reduction_kg_per_year !== null);
-  console.log(`✅ สินค้าที่มี metric ครบ: ${valid.length} รายการ`);
+  console.log(`✅ สินค้าที่พร้อมใช้ (เติมค่า default ให้หมวดที่ไม่มี metric): ${merged.length} รายการ`);
 
-  return valid;
+  return merged;
 }
 
 // ==========================================================================================
@@ -419,13 +417,16 @@ export async function solveBudgetAllocation(
     }
 
     console.log(
-      `   - กันงบเผื่อ: ${reservedBudget.toLocaleString()} บาท [${
-        reserveDetails.length > 0 ? reserveDetails.join(", ") : "None"
+      `   - กันงบเผื่อ: ${reservedBudget.toLocaleString()} บาท [${reserveDetails.length > 0 ? reserveDetails.join(", ") : "None"
       }]`
     );
 
     // B) งบที่ใช้ได้จริงในรอบนี้
     const maxSpendable = currentBudget - reservedBudget;
+    const minPriceCurrent = getMinPricePerCategory(products, categoryCode);
+    const requiredForThisCategory = minPriceCurrent * qty;
+    // ถ้างบที่ใช้ได้จริงต่ำกว่าราคาต่ำสุด * qty ให้ใช้เพดานขั้นต่ำนี้แทน เพื่อไม่ให้กันงบเผื่อหมวดอื่นจนหมด
+    const usableBudget = Math.max(maxSpendable, requiredForThisCategory);
     console.log(
       `   - งบคงเหลือ: ${currentBudget.toLocaleString()} | ใช้ได้จริง: ${maxSpendable.toLocaleString()}`
     );
@@ -448,9 +449,13 @@ export async function solveBudgetAllocation(
         final_score: 0,
       })) as ScoredProduct[];
 
-    const validItems = categoryItems.filter(
-      (p) => p.total_price <= maxSpendable
-    );
+    const validItems = categoryItems
+      .map((p) => ({
+        ...p,
+        price_thb: Number(p.price_thb) || 0,
+        total_price: (Number(p.price_thb) || 0) * qty,
+      }))
+      .filter((p) => p.total_price <= usableBudget);
 
     if (validItems.length === 0) {
       console.log("   !!! ไม่มีสินค้าในงบประมาณนี้");
@@ -600,11 +605,10 @@ export async function saveResultsToSupabase(
           request_item_id: requestItemId,
           product_id: opt.product_id,
           rank: index + 1,
-          rationale: `แนะนำสินค้า ${opt.name} (${
-            opt.brand
-          }) - ลด CO₂ ${opt.total_co2_reduction.toFixed(
-            2
-          )} kg/ปี, Score ${opt.final_score.toFixed(1)}%`,
+          rationale: `แนะนำสินค้า ${opt.name} (${opt.brand
+            }) - ลด CO₂ ${opt.total_co2_reduction.toFixed(2)} kg/ปี, CO₂/บาท ${opt.co2_per_baht != null
+              ? opt.co2_per_baht.toFixed(4)
+              : "-"}`,
           est_co2_saving: opt.total_co2_reduction,
           co2_saving_per_baht: opt.co2_per_baht,
         });
@@ -641,6 +645,30 @@ export async function saveResultsWithRequestItems(
 
   const rowsToInsert: RecommendationResultRow[] = [];
 
+  // for (const result of results) {
+  //   if (result.status === "Success" && result.options) {
+  //     // หา requestItemId ที่ตรงกับ category นี้
+  //     const requestItem = requestItems.find(
+  //       (ri) => ri.category === result.category
+  //     );
+  //     if (!requestItem) continue;
+
+  //     result.options.forEach((opt, index) => {
+  //       rowsToInsert.push({
+  //         request_item_id: requestItem.requestItemId,
+  //         product_id: opt.product_id,
+  //         rank: index + 1,
+  //         rationale: `แนะนำสินค้า ${opt.name} (${
+  //           opt.brand
+  //         }) - ลด CO₂ ${opt.total_co2_reduction.toFixed(
+  //           2
+  //         )} kg/ปี, Score ${opt.final_score.toFixed(1)}%`,
+  //         est_co2_saving: opt.total_co2_reduction,
+  //         co2_saving_per_baht: opt.co2_per_baht,
+  //       });
+  //     });
+  //   }
+  // }
   for (const result of results) {
     if (result.status === "Success" && result.options) {
       // หา requestItemId ที่ตรงกับ category นี้
@@ -654,17 +682,16 @@ export async function saveResultsWithRequestItems(
           request_item_id: requestItem.requestItemId,
           product_id: opt.product_id,
           rank: index + 1,
-          rationale: `แนะนำสินค้า ${opt.name} (${
-            opt.brand
-          }) - ลด CO₂ ${opt.total_co2_reduction.toFixed(
-            2
-          )} kg/ปี, Score ${opt.final_score.toFixed(1)}%`,
+          rationale: `แนะนำสินค้า ${opt.name} (${opt.brand}) - ลด CO₂ ${opt.total_co2_reduction.toFixed(2)} kg/ปี, ลด CO₂ ${opt.co2_per_baht != null
+            ? opt.co2_per_baht.toFixed(4)
+            : "-"} CO₂/บาท`,
           est_co2_saving: opt.total_co2_reduction,
           co2_saving_per_baht: opt.co2_per_baht,
         });
       });
     }
   }
+
 
   if (rowsToInsert.length === 0) {
     return { success: true, insertedCount: 0 };
@@ -709,6 +736,26 @@ export async function runAndSaveToDatabase(
     const products = await loadProductsWithMetrics();
     if (products.length === 0) {
       return { success: false, error: "ไม่พบข้อมูลสินค้า" };
+    }
+
+    // 1.1 ตรวจงบขั้นต่ำที่เป็นไปได้ (ใช้ราคาต่ำสุดของแต่ละหมวด * qty)
+    let requiredTotal = 0;
+    for (const req of dbRequirements) {
+      const minPrice = getMinPricePerCategory(products, req.categoryCode);
+      if (!minPrice || minPrice <= 0) {
+        return {
+          success: false,
+          error: `ไม่พบสินค้าสำหรับหมวด ${req.categoryCode}`,
+        };
+      }
+      requiredTotal += minPrice * req.qty;
+    }
+
+    if (totalBudget < requiredTotal) {
+      return {
+        success: false,
+        error: `งบขั้นต่ำที่ต้องใช้คือประมาณ ${requiredTotal.toLocaleString()} บาท แต่งบที่กรอกคือ ${totalBudget.toLocaleString()} บาท`,
+      };
     }
 
     // 2. สร้าง recommendation_request

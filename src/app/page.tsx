@@ -108,9 +108,11 @@ export default async function HomePage() {
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="rounded-2xl bg-black/20 border border-white/25 p-5 space-y-2">
-            <p className="text-xs text-text-secondary uppercase tracking-wide">
+            <p className="inline-flex items-center px-3 py-1.5 text-xs font-medium tracking-wide uppercase bg-green-500/15 text-green-300 
+            border border-green-400/30 rounded-3xl">
               ภาษาไทย
             </p>
+
             <p className="text-sm md:text-base font-medium leading-relaxed">
               ระบบแนะนำการลดคาร์บอนฟุตพริ้นท์ในมหาวิทยาลัยสงขลานครินทร์
               วิทยาเขตภูเก็ต โดยใช้ปัญญาประดิษฐ์
@@ -118,7 +120,8 @@ export default async function HomePage() {
           </div>
 
           <div className="rounded-2xl bg-black/20 border border-white/25 p-5 space-y-2">
-            <p className="text-xs text-text-secondary uppercase tracking-wide">
+            <p className="inline-flex items-center px-3 py-1.5 text-[10px] font-medium tracking-wide uppercase bg-sky-500/20 text-sky-400 
+            border border-green-400/30 rounded-3xl">
               English
             </p>
             <p className="text-sm md:text-base font-medium leading-relaxed">
@@ -147,6 +150,95 @@ export default async function HomePage() {
         </p>
       </section>
 
+{/* 4) อธิบายความหมาย Scope 1–3 */}
+<section className="mx-auto max-w-6xl space-y-6 px-6 mt-10">
+  <h2 className="text-3xl font-semibold">เข้าใจความหมายของแต่ละ Scope</h2>
+  <p className="text-sm md:text-base text-text-secondary max-w-3xl">
+    มาตรฐาน Carbon Footprint for Organization (CFO) แบ่งการปล่อยก๊าซเรือนกระจกออกเป็น 3 กลุ่ม
+    เพื่อให้องค์กรสามารถวิเคราะห์และจัดการการปล่อยคาร์บอนได้อย่างถูกต้องและครอบคลุม
+  </p>
+
+  <div className="grid gap-6 md:grid-cols-3">
+    {/* SCOPE 1 */}
+    <div className="rounded-2xl bg-black/20 border border-white/25 p-6 space-y-3">
+      <div className="flex items-center gap-3">
+        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-red-500/20 text-red-300 text-xl">
+          🏭
+        </span>
+        <div className="flex flex-col">
+          <p className="text-[11px] uppercase tracking-wide text-text-secondary">
+            Scope 1
+          </p>
+          <h3 className="text-lg font-semibold">การปล่อยโดยตรงขององค์กร</h3>
+        </div>
+      </div>
+
+      <p className="text-[13px] text-text-secondary leading-relaxed">
+        การปล่อยก๊าซเรือนกระจกที่เกิดจากกิจกรรมภายในองค์กรโดยตรงและอยู่ภายใต้การควบคุม เช่น:
+      </p>
+
+      <ul className="text-[13px] text-text-secondary space-y-1.5 list-disc list-inside">
+        <li>การเผาไหม้เชื้อเพลิงในหม้อไอน้ำ เครื่องจักร หรือเครื่องกำเนิดไฟฟ้า</li>
+        <li>ยานพาหนะที่องค์กรเป็นเจ้าของหรือควบคุมเอง</li>
+        <li>การรั่วไหลของสารทำความเย็นหรือก๊าซจากระบบปรับอากาศและเครื่องจักร</li>
+      </ul>
+    </div>
+
+    {/* SCOPE 2 */}
+    <div className="rounded-2xl bg-black/20 border border-white/25 p-6 space-y-3">
+      <div className="flex items-center gap-3">
+        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/20 text-blue-300 text-xl">
+          ⚡
+        </span>
+        <div className="flex flex-col">
+          <p className="text-[11px] uppercase tracking-wide text-text-secondary">
+            Scope 2
+          </p>
+          <h3 className="text-lg font-semibold">การใช้พลังงานทางอ้อม</h3>
+        </div>
+      </div>
+
+      <p className="text-[13px] text-text-secondary leading-relaxed">
+        การปล่อยที่เกิดขึ้นทางอ้อมจากการผลิตพลังงานที่องค์กรซื้อมาใช้ เช่น:
+      </p>
+
+      <ul className="text-[13px] text-text-secondary space-y-1.5 list-disc list-inside">
+        <li>ไฟฟ้าที่ซื้อจากการไฟฟ้า</li>
+        <li>พลังงานความร้อน ไอน้ำ หรือการทำความเย็นจากผู้ให้บริการภายนอก</li>
+        <li>แม้องค์กรไม่ได้ปล่อยเองโดยตรง แต่ถือเป็นผลจากการใช้พลังงานขององค์กร</li>
+      </ul>
+    </div>
+
+    {/* SCOPE 3 */}
+    <div className="rounded-2xl bg-black/20 border border-white/25 p-6 space-y-3">
+      <div className="flex items-center gap-3">
+        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-300 text-xl">
+          🌍
+        </span>
+        <div className="flex flex-col">
+          <p className="text-[11px] uppercase tracking-wide text-text-secondary">
+            Scope 3
+          </p>
+          <h3 className="text-lg font-semibold">การปล่อยทางอ้อมอื่น ๆ </h3>
+        </div>
+      </div>
+
+      <p className="text-[13px] text-text-secondary leading-relaxed">
+        การปล่อยก๊าซเรือนกระจกทางอ้อมที่เกิดขึ้นในห่วงโซ่กิจกรรมที่เกี่ยวข้องกับองค์กร
+        แต่ไม่ได้อยู่ภายใต้การควบคุมโดยตรง เช่น:
+      </p>
+
+      <ul className="text-[13px] text-text-secondary space-y-1.5 list-disc list-inside">
+        <li>การเดินทางมาทำงานของบุคลากรและนักศึกษาด้วยพาหนะส่วนตัวหรือขนส่งสาธารณะ</li>
+        <li>การเดินทางไปประชุม/สัมมนานอกสถานที่</li>
+        <li>การใช้วัสดุอุปกรณ์และบริการต่าง ๆ การขนส่งวัตถุดิบ ของเสีย และการจัดการขยะ</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+
       {/* 4) สองส่วนหลักของระบบ */}
       <section className="mx-auto max-w-6xl space-y-6 px-6">
         <h2 className="text-3xl font-semibold">ระบบนี้แบ่งออกเป็น 2 ส่วนหลัก</h2>
@@ -155,7 +247,10 @@ export default async function HomePage() {
           {/* ส่วนที่ 1: คำนวณคาร์บอนฟุตพริ้นท์ */}
           <div className="rounded-2xl bg-card-bg/80 border border border-white/25 p-6 space-y-3">
             <div className="flex items-center gap-2 text-primary-green">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-green/15 text-lg font-bold">
+              {/* <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-green/15 text-lg font-bold">
+                1
+              </span> */}
+              <span className="inline-flex items-center justify-center h-9 w-9 text-base rounded-full bg-green-500/20 text-green-300 font-bold">
                 1
               </span>
               <h3 className="text-lg font-semibold">
@@ -176,7 +271,10 @@ export default async function HomePage() {
           {/* ส่วนที่ 2: ระบบแนะนำด้วย AI */}
           <div className="rounded-2xl bg-card-bg/80 border border border-white/25 p-6 space-y-3">
             <div className="flex items-center gap-2 text-primary-green">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-green/15 text-lg font-bold">
+              {/* <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary-green/15 text-lg font-bold">
+                2
+              </span> */}
+              <span className="inline-flex items-center justify-center h-9 w-9 text-base rounded-full bg-sky-500/20 text-sky-400 font-bold">
                 2
               </span>
               <h3 className="text-lg font-semibold">
@@ -204,7 +302,12 @@ export default async function HomePage() {
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="rounded-2xl bg-black/20 border border-white/25 p-5 space-y-2">
-            <h3 className="text-lg font-semibold">บริบทการใช้งานในมหาวิทยาลัย</h3>
+            <div className="flex items-center gap-3">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-yellow-800/30 text-lg">
+                🏫
+              </span>
+              <h3 className="text-lg font-semibold">บริบทการใช้งานในมหาวิทยาลัย</h3>
+            </div>
             <ul className="text-[13px] text-text-secondary space-y-1.5 list-disc list-inside">
               <li>ใช้ภายในมหาวิทยาลัยสงขลานครินทร์ วิทยาเขตภูเก็ต</li>
               <li>ผู้ใช้ส่วนใหญ่เป็นบุคลากรหรือผู้รับผิดชอบด้านสิ่งแวดล้อม</li>
@@ -213,7 +316,12 @@ export default async function HomePage() {
           </div>
 
           <div className="rounded-2xl bg-black/20 border border-white/25 p-5 space-y-2">
-            <h3 className="text-lg font-semibold">ตัวอย่างการใช้งาน</h3>
+            <div className="flex items-center gap-3">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-red-500/20 text-lg">
+                🧭
+              </span>
+              <h3 className="text-lg font-semibold">ตัวอย่างการใช้งาน</h3>
+            </div>
             <ul className="text-[13px] text-text-secondary space-y-1.5 list-disc list-inside">
               <li>
                 รวบรวมข้อมูลการใช้ไฟฟ้า การเดินทาง และกิจกรรมอื่นๆ

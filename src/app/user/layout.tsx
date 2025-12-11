@@ -24,7 +24,7 @@ export default async function UserLayout({ children }: { children: ReactNode }) 
 
   // ❌ ถ้าเป็น admin → ไม่ให้ใช้โซน user
   if (row?.is_admin) {
-    redirect("/admin/profile"); // หรือ "/admin" ตามที่คุณใช้จริง
+    redirect("/admin/home"); // หรือ "/admin" ตามที่คุณใช้จริง
   }
 
   return <>{children}</>;

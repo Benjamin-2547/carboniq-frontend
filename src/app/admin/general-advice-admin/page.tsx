@@ -139,12 +139,13 @@ export default function GeneralAdviceAdminPage() {
       //     ),
       //   }))
 
-      // setCategories(grouped)
-      // setLoading(false)
+      setCategories(grouped)
+      setLoading(false)
     }
 
     load()
   }, [supabase])
+
 
   // helper อัปเดต state local
   function updateCategoryLocal(id: string, patch: Partial<CategoryWithDetails>) {

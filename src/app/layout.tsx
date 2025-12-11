@@ -66,7 +66,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {children}
           </main>
 
-          <footer className="mt-12 border-t border-border-muted/60 p-6 text-sm text-text-secondary">
+          <footer className="mt-12 border-t border-border-muted/60 p-6 text-[13px] text-text-secondary">
             © {new Date().getFullYear()} Prince of Songkla University, Phuket Campus — All rights reserved.
           </footer>
 

@@ -61,7 +61,7 @@ export default function GetAdvicePage() {
   const [loadingData, setLoadingData] = useState(true)
   const [saving, setSaving] = useState(false)
 
-  const [totalBudget, setTotalBudget] = useState<string>("500000.00")
+  const [totalBudget, setTotalBudget] = useState<string>("0.00")
   const [itemCount, setItemCount] = useState<number>(1)
 
   const [categories, setCategories] = useState<ProductCategory[]>([])
@@ -84,7 +84,15 @@ export default function GetAdvicePage() {
 
         if (catErr) throw catErr
 
-        setCategories(catRows || [])
+        const sortedCats = (catRows || [])
+          .slice()
+          .sort((a: ProductCategory, b: ProductCategory) => {
+            const nameA = a.display_name_th ?? ""
+            const nameB = b.display_name_th ?? ""
+            return nameA.localeCompare(nameB, "th")
+          })
+
+        setCategories(sortedCats)
       } catch (err) {
         console.error(err)
         toast.error("โหลดข้อมูลหมวดสินค้าไม่สำเร็จ")
@@ -243,7 +251,7 @@ export default function GetAdvicePage() {
       </section>
 
       {/* งบประมาณรวม + จำนวนหมวด */}
-      <Card className="bg-black/30 border border-white/10 shadow-lg">
+      <Card className="bg-black/30 border border-white/20 shadow-lg">
         <CardHeader className="space-y-0">
           <div className="flex items-center gap-2">
             <Wallet className="h-5 w-5 text-emerald-400" />
@@ -310,7 +318,7 @@ export default function GetAdvicePage() {
           return (
             <Card
               key={index}
-              className="bg-black/30 border border-white/12 shadow-md"
+              className="bg-black/30 border border-white/20 shadow-md"
             >
               <CardHeader className="flex flex-row items-center justify-between gap-3">
                 <div className="flex items-center gap-3">

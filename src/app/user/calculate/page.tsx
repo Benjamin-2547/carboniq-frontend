@@ -969,13 +969,13 @@ export default function CalculatePage() {
           {/* Submit button */}
           <div className="pt-2 flex justify-end">
             <Button
-              className="bg-emerald-500 hover:bg-emerald-400 text-black font-semibold px-6 shadow-md shadow-emerald-500/40"
+              className="bg-emerald-500 hover:bg-emerald-400 text-black font-semibold px-4 shadow-sm shadow-emerald-500/40"
               size="lg"
               onClick={handleSubmitActivity}
               disabled={submitting || !selectedActivityId}
             >
               {submitting && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              เสร็จสิ้น – บันทึกและคำนวณ
+              บันทึกและคำนวณ
             </Button>
           </div>
         </CardContent>

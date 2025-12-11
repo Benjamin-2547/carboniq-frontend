@@ -218,7 +218,11 @@ export default function SummaryPage() {
       if (unitRes.error) throw unitRes.error
       if (ciRes.error) throw ciRes.error
 
-      const scopes = (scopeRes.data ?? []) as ScopeRow[]
+      const scopesRaw = (scopeRes.data ?? []) as ScopeRow[]
+      const scopes: ScopeRow[] = scopesRaw.map((s) => ({
+        ...s,
+        scope_name: `Scope ${s.scope_id}`,
+      }))
       const logs = (logRes.data ?? []) as CarbonLogRow[]
       const activities = (activityRes.data ?? []) as ActivityRow[]
       const fields = (fieldRes.data ?? []) as ActivityFieldRow[]
@@ -811,4 +815,3 @@ export default function SummaryPage() {
     </>
   )
 }
-
