@@ -45,7 +45,7 @@ export default function AdminHeader() {
             </button>
           </form>
           <Link
-            href="/"
+            href="/admin/home"
             className="px-3 py-1.5 rounded-md bg-gray-200 text-black font-medium hover:bg-white transition-colors"
           >
             Home
