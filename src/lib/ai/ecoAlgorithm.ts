@@ -165,48 +165,48 @@ async function loadSpecsAndMerge(products: Product[]): Promise<Product[]> {
     supabase
       .from("air_conditioner")
       .select(
-        "product_id, co2e_reduction_kg_per_year, energy_cost_thb_per_year"
+        'product_id, "ลด_CO2eต่อปี_กก", "ค่าต่อไฟปี_บาท"'
       ),
     supabase
       .from("fan")
       .select(
-        "product_id, co2e_reduction_kg_per_year, energy_cost_thb_per_year"
+        'product_id, "ลด_CO2eต่อปี_กก", "ค่าต่อไฟปี_บาท"'
       ),
     supabase.from("refrigerator").select("product_id, energy_use_kwh_per_year"),
     supabase
       .from("ev_car")
       .select(
-        "product_id, co2e_reduction_kg_per_year, energy_cost_thb_per_year"
+        'product_id, "ลด_CO2eต่อปี_กก", "ค่าต่อไฟปี_บาท"'
       ),
     supabase
       .from("monitor")
       .select(
-        "product_id, co2e_reduction_kg_per_year, energy_cost_thb_per_year"
+        'product_id, "ลด_CO2eต่อปี_กก", "ค่าต่อไฟปี_บาท"'
       ),
     supabase
       .from("light_bulb")
       .select(
-        "product_id, co2e_reduction_kg_per_year, energy_cost_thb_per_year"
+        'product_id, "ลด_CO2eต่อปี_กก", "ค่าต่อไฟปี_บาท"'
       ),
     supabase
       .from("gas_stove")
       .select(
-        "product_id, co2e_reduction_kg_per_year, energy_cost_thb_per_year"
+        'product_id, "ลด_CO2eต่อปี_กก", "ค่าต่อไฟปี_บาท"'
       ),
     supabase
       .from("food_waste_disposer")
       .select(
-        "product_id, co2e_reduction_kg_per_year, energy_cost_thb_per_year"
+        'product_id, "ลด_CO2eต่อปี_กก", "ค่าต่อไฟปี_บาท"'
       ),
     supabase
       .from("electric_bus")
       .select(
-        "product_id, co2e_reduction_kg_per_year, energy_cost_thb_per_year"
+        'product_id, "ลด_CO2eต่อปี_กก", "ค่าต่อไฟปี_บาท"'
       ),
     supabase
       .from("electric_van")
       .select(
-        "product_id, co2e_reduction_kg_per_year, energy_cost_thb_per_year"
+        'product_id, "ลด_CO2eต่อปี_กก", "ค่าต่อไฟปี_บาท"'
       ),
   ]);
 
@@ -219,16 +219,16 @@ async function loadSpecsAndMerge(products: Product[]): Promise<Product[]> {
   // Air Conditioner
   airData?.forEach((row: any) => {
     specsMap[row.product_id] = {
-      co2_reduction: row.co2e_reduction_kg_per_year,
-      energy_cost: row.energy_cost_thb_per_year,
+      co2_reduction: row["ลด_CO2eต่อปี_กก"],
+      energy_cost: row["ค่าต่อไฟปี_บาท"],
     };
   });
 
   // Fan
   fanData?.forEach((row: any) => {
     specsMap[row.product_id] = {
-      co2_reduction: row.co2e_reduction_kg_per_year,
-      energy_cost: row.energy_cost_thb_per_year,
+      co2_reduction: row["ลด_CO2eต่อปี_กก"],
+      energy_cost: row["ค่าต่อไฟปี_บาท"],
     };
   });
 
@@ -244,56 +244,56 @@ async function loadSpecsAndMerge(products: Product[]): Promise<Product[]> {
   // EV Car
   evData?.forEach((row: any) => {
     specsMap[row.product_id] = {
-      co2_reduction: row.co2e_reduction_kg_per_year,
-      energy_cost: row.energy_cost_thb_per_year,
+      co2_reduction: row["ลด_CO2eต่อปี_กก"],
+      energy_cost: row["ค่าต่อไฟปี_บาท"],
     };
   });
 
   // Monitor
   monitorData?.forEach((row: any) => {
     specsMap[row.product_id] = {
-      co2_reduction: row.co2e_reduction_kg_per_year,
-      energy_cost: row.energy_cost_thb_per_year,
+      co2_reduction: row["ลด_CO2eต่อปี_กก"],
+      energy_cost: row["ค่าต่อไฟปี_บาท"],
     };
   });
 
   // Light Bulb
   bulbData?.forEach((row: any) => {
     specsMap[row.product_id] = {
-      co2_reduction: row.co2e_reduction_kg_per_year,
-      energy_cost: row.energy_cost_thb_per_year,
+      co2_reduction: row["ลด_CO2eต่อปี_กก"],
+      energy_cost: row["ค่าต่อไฟปี_บาท"],
     };
   });
 
   // Gas Stove
   stoveData?.forEach((row: any) => {
     specsMap[row.product_id] = {
-      co2_reduction: row.co2e_reduction_kg_per_year,
-      energy_cost: row.energy_cost_thb_per_year,
+      co2_reduction: row["ลด_CO2eต่อปี_กก"],
+      energy_cost: row["ค่าต่อไฟปี_บาท"],
     };
   });
 
   // Food Waste Disposer
   fwdData?.forEach((row: any) => {
     specsMap[row.product_id] = {
-      co2_reduction: row.co2e_reduction_kg_per_year,
-      energy_cost: row.energy_cost_thb_per_year,
+      co2_reduction: row["ลด_CO2eต่อปี_กก"],
+      energy_cost: row["ค่าต่อไฟปี_บาท"],
     };
   });
 
   // Electric Bus
   busData?.forEach((row: any) => {
     specsMap[row.product_id] = {
-      co2_reduction: row.co2e_reduction_kg_per_year,
-      energy_cost: row.energy_cost_thb_per_year,
+      co2_reduction: row["ลด_CO2eต่อปี_กก"],
+      energy_cost: row["ค่าต่อไฟปี_บาท"],
     };
   });
 
   // Electric Van
   vanData?.forEach((row: any) => {
     specsMap[row.product_id] = {
-      co2_reduction: row.co2e_reduction_kg_per_year,
-      energy_cost: row.energy_cost_thb_per_year,
+      co2_reduction: row["ลด_CO2eต่อปี_กก"],
+      energy_cost: row["ค่าต่อไฟปี_บาท"],
     };
   });
 
