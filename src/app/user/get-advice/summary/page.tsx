@@ -676,7 +676,10 @@ export default function AdviceSummaryPage() {
 
 
                 {/* ปุ่มบันทึกสินค้า */}
-                <div className="flex justify-end pt-2">
+                <div className="flex flex-col items-end gap-2 pt-2">
+                  <p className="text-[11px] md:text-xs text-muted-foreground">
+                    กดบันทึกเพื่อเก็บคำแนะนำนี้ไว้ที่หน้าโปรไฟล์
+                  </p>
                   <Button
                     size="sm"
                     className="inline-flex items-center gap-2 rounded-lg bg-emerald-500/80 px-4 py-2 text-xs md:text-sm font-semibold text-black shadow-lg hover:bg-emerald-500 disabled:bg-emerald-700/60 disabled:text-emerald-100/60"

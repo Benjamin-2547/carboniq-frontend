@@ -237,7 +237,7 @@ export default function GetAdvicePage() {
               <Leaf className="mr-1 h-3 w-3" />
               รับคำแนะนำจาก AI
             </div> */}
-            <Button
+            {/* <Button
               size="sm"
               className="px-3 py-4 text-sm font-semibold bg-emerald-500/80 hover:bg-emerald-500 text-black rounded-lg shadow-xl"
               onClick={handleSubmit}
@@ -245,7 +245,7 @@ export default function GetAdvicePage() {
             >
               <Sparkles className="w-4 h-4" />
               {saving ? "กำลังบันทึกคำขอ..." : "รับคำแนะนำจาก AI"}
-            </Button>
+            </Button> */}
           </div>
         </div>
       </section>
@@ -400,8 +400,19 @@ export default function GetAdvicePage() {
       </section>
 
       {/* ปุ่ม submit */}
-      <section className=" space-y-3"></section>
+      <section className="space-y-3 pb-4">
+        <div className="flex justify-end">
+          <Button
+            size="sm"
+            className="px-4 py-4 text-sm font-semibold bg-emerald-500/80 hover:bg-emerald-500 text-black rounded-lg shadow-xl"
+            onClick={handleSubmit}
+            disabled={saving || loadingData}
+          >
+            <Sparkles className="w-4 h-4" />
+            {saving ? "กำลังบันทึกคำขอ..." : "รับคำแนะนำจาก AI"}
+          </Button>
+        </div>
+      </section>
     </main>
   )
 }
-

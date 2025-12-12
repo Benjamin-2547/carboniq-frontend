@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
 import { toast } from "sonner"
-import { Loader2, ArrowLeft, FileDown, RefreshCw } from "lucide-react"
+import { Loader2, ArrowLeft, FileDown, Sparkles } from "lucide-react"
 
 import {
   ResponsiveContainer,
@@ -409,6 +409,10 @@ export default function SummaryPage() {
     router.push("/user/calculate")
   }
 
+  function handleGetAdvice() {
+    router.push("/user/get-advice")
+  }
+
   function handleExportPdf() {
     if (typeof window !== "undefined") window.print()
   }
@@ -454,6 +458,15 @@ export default function SummaryPage() {
             >
               <FileDown className="w-4 h-4" />
               Export PDF
+            </Button>
+
+            <Button
+              size="sm"
+              className="gap-1 bg-gradient-to-r from-indigo-400 via-emerald-400 to-teal-300 text-slate-950 hover:from-indigo-300 hover:via-emerald-300 hover:to-teal-200 shadow-lg shadow-emerald-500/50"
+              onClick={handleGetAdvice}
+            >
+              <Sparkles className="w-4 h-4" />
+              รับคำแนะนำจาก AI
             </Button>
           </div>
         </header>

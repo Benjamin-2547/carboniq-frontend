@@ -785,8 +785,8 @@ export default function CalculatePage() {
             แบบฟอร์มกรอกข้อมูล
           </CardTitle>
           <CardDescription className="text-sm md:text-base text-muted-foreground">
-            เลือก Scope → เลือกกิจกรรม → กรอกข้อมูลให้ครบ แล้วกด{" "}
-            <span className="font-semibold text-emerald-300">เสร็จสิ้น</span>
+            เลือก Scope → เลือกกิจกรรม → กรอกข้อมูลให้ครบ แล้วกด บันทึกเเละคำนวณ{" "}
+            {/* <span className="font-semibold text-emerald-300">เสร็จสิ้น</span> */}
           </CardDescription>
         </CardHeader>
 
